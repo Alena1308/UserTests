@@ -7,39 +7,68 @@ import org.junit.jupiter.api.Test;
 class UserTest {
     private static final String TRUE_LOGIN = "Login";
     private static final String LOGIN_EMPTY = "";
+    private static final String LOGIN_BLANK = "     ";
     private static final String TRUE_EMAIL = "email@mail.ru";
     private static final String FALLS_EMAIL_WITHOUT_AT = "emailmail.ru";
     private static final String FALLS_EMAIL_WITHOUT_DOT = "email@mailru";
 
     @Test
-    public void shouldCreateUserObjectWithTwoParameters(){
+    public void shouldCreateUserObjectWithTwoParameters() {
         User result = new User(TRUE_LOGIN, TRUE_EMAIL);
         Assertions.assertNotNull(result);
     }
+
     @Test
-    public void shouldCreateUserObjectWithNoParameters(){
+    public void shouldCreateUserObjectWithNoParameters() {
         User result = new User();
         Assertions.assertNotNull(result);
     }
+
     @Test
-    public void shouldEmailContainsAtAndDot(){
-        User result1 = new User(TRUE_LOGIN, FALLS_EMAIL_WITHOUT_AT);
-        User result2 = new User(TRUE_LOGIN, FALLS_EMAIL_WITHOUT_DOT);
-        User result3 = new User(TRUE_LOGIN, TRUE_EMAIL);
-        Assertions.assertFalse(result1.getEmail().contains("@"));
-        Assertions.assertFalse(result2.getEmail().contains("."));
-        Assertions.assertTrue(result3.getEmail().contains("@")
-                && result3.getEmail().contains("."));
+    public void shouldEmailContainsAtAndDot() {
+        User result = new User(TRUE_LOGIN, TRUE_EMAIL);
+        Assertions.assertTrue(result.getEmail().contains("@")
+                && result.getEmail().contains("."));
     }
+
     @Test
-    public  void shouldNotBeEqualLoginAndEmail(){
+    public void shouldNotBeEqualLoginAndEmail() {
         User result = new User(TRUE_LOGIN, TRUE_EMAIL);
         Assertions.assertNotEquals(result.getLogin(), result.getEmail());
     }
+
     @Test
-    public void expectedLoginException(){
+    public void expectedExceptionEmailNoContainsAt() {
         Assertions.assertThrows(IllegalArgumentException.class, () -> {
-            User result1 = new User(LOGIN_EMPTY, TRUE_EMAIL);
+            User result = new User(TRUE_LOGIN, FALLS_EMAIL_WITHOUT_AT);
+        });
+    }
+
+    @Test
+    public void expectedExceptionEmailNoContainsDot() {
+        Assertions.assertThrows(IllegalArgumentException.class, () -> {
+            User result = new User(TRUE_LOGIN, FALLS_EMAIL_WITHOUT_DOT);
+        });
+    }
+
+    @Test
+    public void expectedIllegalArgumentExceptionWhenEmailEqualsLogin() {
+        Assertions.assertThrows(IllegalArgumentException.class, () -> {
+            User result = new User(TRUE_EMAIL, TRUE_EMAIL);
+        });
+    }
+
+    @Test
+    public void expectedIllegalArgumentExceptionWhenLoginIsEmpty() {
+        Assertions.assertThrows(IllegalArgumentException.class, () -> {
+            User result = new User(LOGIN_EMPTY, TRUE_EMAIL);
+        });
+    }
+
+    @Test
+    public void expectedIllegalArgumentExceptionWhenLoginIsBlank() {
+        Assertions.assertThrows(IllegalArgumentException.class, () -> {
+            User result = new User(LOGIN_BLANK, TRUE_EMAIL);
         });
     }
 }
